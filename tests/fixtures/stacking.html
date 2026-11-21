@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stacked card layers</title>
+<style>
+*{box-sizing:border-box}html{background:#edf1f8}body{margin:0;padding:24px;font:14px/20px Arial,sans-serif;color:#273652}
+h1{font-size:20px;margin:0 0 20px}.gallery{display:grid;grid-template-columns:repeat(auto-fit,280px);gap:28px}
+.case{position:relative;isolation:isolate;padding:18px 22px 30px;background:#e9eef6}.case h2{font-size:12px;margin:0 0 12px}
+.card{position:relative;z-index:1;display:flex;width:220px;height:164px;background:white;border:1px solid #fff;border-radius:6px;box-shadow:0 0 24px #2736520a}
+.inner{width:218px;height:162px;background:white;border-radius:5px}
+.cover{height:88px;background:linear-gradient(30deg,#5269ba,#ac78b5);border-radius:5px 5px 0 0}.caption{margin:10px 12px 0;font-weight:bold}.probe{position:absolute;left:20px;right:20px;bottom:8px;height:12px}
+.layer{position:absolute;left:50%;top:0;width:90%;height:100%;background:#c8cfd9;transform:translate(-50%,6px);z-index:-1;border-radius:6px}
+.tiny{width:80%;background:#dce2eb;transform:translate(-50%,12px);z-index:-2}
+.auto{position:absolute;inset:0;z-index:auto;pointer-events:none}
+.negative-group{position:absolute;inset:0;z-index:-1;background:#5269ba}.high-child{position:absolute;inset:10px;z-index:999;background:#df7d65}
+.overlay{position:absolute;z-index:2;right:5px;bottom:35px;width:80px;height:40px;background:#7688a8}.overlay-back{position:absolute;inset:5px;z-index:-1;background:#df7d65}
+.flex-context{display:flex;position:static;z-index:1}.isolate-context{z-index:auto;isolation:isolate}
+</style></head><body><h1>Stacked card layers</h1><div class="gallery">
+<section class="case" id="layers-last"><h2>Negative layers after content</h2><div class="card" id="card-last"><div class="inner" id="front-last"><div class="cover"></div><p class="caption">Visible foreground</p><div class="probe" id="probe-last"></div></div><div class="layer" id="back-last"></div><div class="layer tiny" id="far-last"></div></div></section>
+<section class="case" id="layers-first"><h2>Negative layers before content</h2><div class="card" id="card-first"><div class="layer tiny" id="far-first"></div><div class="layer" id="back-first"></div><div class="inner" id="front-first"><div class="cover"></div><p class="caption">White remains white</p><div class="probe" id="probe-first"></div></div></div></section>
+<section class="case" id="auto-wrapper"><h2>Auto wrapper does not isolate</h2><div class="card" id="card-auto"><div class="inner"><div class="cover"></div><p class="caption">Inherited context</p><div class="probe" id="probe-auto"></div></div><div class="auto"><div class="layer tiny"></div><div class="layer"></div></div></div></section>
+<section class="case" id="atomic-negative"><h2>Positive child stays in its context</h2><div class="card" id="card-atomic"><div class="inner"><div class="cover"></div><p class="caption">Covered nested child</p><div class="probe" id="probe-atomic"></div></div><div class="negative-group" id="negative-group"><div class="high-child" id="high-child"></div></div></div></section>
+<section class="case" id="isolated-context"><h2>Isolation with auto z-index</h2><div class="card isolate-context" id="card-isolated"><div class="inner"><div class="cover"></div><p class="caption">Isolated foreground</p><div class="probe" id="probe-isolated"></div></div><div class="layer"></div><div class="layer tiny"></div></div></section>
+<section class="case" id="flex-item-context"><h2>Static flex item with z-index</h2><div style="display:flex"><div class="card flex-context" id="card-flex"><div class="inner"><div class="cover"></div><p class="caption">Flex item foreground</p><div class="probe" id="probe-flex"></div></div><div class="layer"></div><div class="layer tiny"></div></div></div></section>
+<section class="case" id="positive-context"><h2>Negative child above its parent fill</h2><div class="card" id="card-positive"><div class="inner"><div class="cover"></div><p class="caption">Separate upper context</p><div class="probe" id="probe-positive"></div></div><div class="layer"></div></div><div class="overlay" id="upper-context"><div class="overlay-back" id="upper-back"></div></div></section>
+</div></body></html>

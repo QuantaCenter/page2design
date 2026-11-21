@@ -1,0 +1,49 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native background attachments</title><style>
+*{box-sizing:border-box}body{margin:0;padding:16px;background:#eaf0f8;font:16px Arial}.case{position:relative;width:354px;height:176px;margin-bottom:16px;background:#fff;padding:20px;overflow:hidden}.subject{position:relative;width:306px;height:132px;border:4px solid #536b8b;border-radius:18px;padding:12px;background-color:#d4deee;background-image:linear-gradient(120deg,#e6b651,#418db8);background-repeat:no-repeat}.scroll{overflow:auto;scrollbar-width:none}.content{width:462px;height:272px;pointer-events:none}.marker{position:absolute;left:95px;top:65px;width:42px;height:27px;background:#e96968;border:2px solid #563f73}.pseudo::before{content:"";position:absolute;inset:6px;border-radius:12px;background:linear-gradient(100deg,#e6b651,#418db8);background-attachment:fixed;background-size:84px 64px;background-repeat:repeat;background-position:17px 23px}.ancestor{position:relative;width:314px;height:140px;transform:rotate(2deg) scale(.94);transform-origin:top left}.ancestor .subject{width:306px}
+#local-pseudo::before{content:"Native local generated content with a long unwrapped line";white-space:nowrap;overflow:hidden;background-attachment:local;background-size:100% 100%;background-repeat:no-repeat;font:24px Arial;color:transparent;padding:10px;border:4px solid #536b8b}
+</style></head><body><main id="cases"></main><script>
+const image='/visual-assets/pattern.png';
+const vector='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" fill="#e6b651"/><circle cx="40" cy="25" r="19" fill="#418db8"/></svg>');
+const cases=[
+ ['fixed-gradient','background-attachment:fixed;background-size:84px 64px;background-repeat:repeat;background-position:17px 23px'],
+ ['fixed-percent','background-attachment:fixed;background-size:60% 70%;background-position:30% 45%'],
+ ['fixed-image',`background-attachment:fixed;background-image:url("${image}");background-size:80px 55px;background-repeat:repeat;background-position:13px 17px`],
+ ['fixed-vector',`background-attachment:fixed;background-image:url("${vector}");background-size:80px 55px;background-repeat:repeat;background-position:13px 17px`],
+ ['fixed-size-auto','background-attachment:fixed;background-repeat:repeat;background-position:center'],
+ ['fixed-round','background-attachment:fixed;background-size:107px 93px;background-repeat:round space;background-position:15% 30%'],
+ ['fixed-content','background-attachment:fixed;background-size:90px 73px;background-repeat:repeat;background-origin:content-box;background-clip:content-box'],
+ ['fixed-transform','background-attachment:fixed;background-size:61% 75%;background-position:30% 40%;transform:rotate(3deg) scale(.93);transform-origin:top left'],
+ ['fixed-ancestor','background-attachment:fixed;background-size:61% 75%;background-position:30% 40%','ancestor'],
+ ['fixed-filter','background-attachment:fixed;background-size:100% 100%;filter:brightness(.87)'],
+ ['fixed-will-change','background-attachment:fixed;background-size:100% 100%;will-change:transform'],
+ ['fixed-pseudo','background-image:none','pseudo'],
+ ['fixed-pseudo-ancestor','background-image:none','pseudo ancestor'],
+ ['local-vertical','background-attachment:local;background-size:100% 100%','scroll',0,57],
+ ['local-horizontal','background-attachment:local;background-size:100% 100%','scroll',73,0],
+ ['local-both','background-attachment:local;background-size:calc(100% - 30px) 70%;background-position:30% 45%','scroll',73,57],
+ ['local-content','background-attachment:local;background-origin:content-box;background-clip:content-box;background-size:100% 100%','scroll',73,57],
+ ['local-padding','background-attachment:local;background-origin:padding-box;background-clip:padding-box;background-size:100% 100%','scroll',73,57],
+ ['local-border','background-attachment:local;background-origin:border-box;background-clip:border-box;background-size:100% 100%','scroll',73,57],
+ ['local-image',`background-attachment:local;background-image:url("${image}");background-size:80px 55px;background-repeat:repeat;background-position:13px 17px`,'scroll',73,57],
+ ['local-vector',`background-attachment:local;background-image:url("${vector}");background-size:80px 55px;background-repeat:repeat;background-position:13px 17px`,'scroll',73,57],
+ ['local-color','background-attachment:local;background-image:none;background-clip:content-box','scroll',73,57],
+ ['local-hidden','background-attachment:local;background-size:100% 100%;overflow:hidden','',73,57],
+ ['local-unscrolled','background-attachment:local;background-size:100% 100%','scroll',0,0],
+ ['local-transform','background-attachment:local;background-size:100% 100%;transform:rotate(3deg) scale(.93);transform-origin:top left','scroll',73,57],
+ ['mixed','background-image:linear-gradient(30deg,transparent,#d95d6288),linear-gradient(120deg,#e6b651,#418db8);background-attachment:scroll,local;background-size:100% 100%,100% 100%;background-blend-mode:multiply,normal;opacity:.76','scroll',73,57],
+ ['local-bottom','background-attachment:local;background-size:100% 100%;background-clip:content-box;background-origin:content-box','scroll',999,999],
+ ['local-clip','background-attachment:local;background-size:100% 100%;overflow:clip'],
+ ['local-pseudo','background-image:none','pseudo'],
+ ['fixed-shadow','background-attachment:fixed;background-size:81px 69px;background-repeat:repeat','shadow'],
+ ['fixed-shadow-transform','background-attachment:fixed;background-size:100% 100%','shadow transform']
+];
+const fixedOnly=new URLSearchParams(location.search).has('fixed-only');
+if(fixedOnly){const style=document.createElement('style');style.textContent='main{display:grid;grid-template-columns:repeat(3,110px);gap:8px}.case{width:110px;height:150px;padding:6px;margin:0}.subject,.ancestor,.ancestor .subject{width:98px}';document.head.append(style)}
+for(const [id,style,classes='',left=0,top=0] of cases.filter(([id])=>!fixedOnly||id.startsWith('fixed'))){
+ const section=document.createElement('section');section.className='case';section.id='case-'+id;document.querySelector('main').append(section);
+ let parent=section;
+ if(classes.includes('ancestor')){parent=document.createElement('div');parent.className='ancestor';section.append(parent)}
+ if(classes.includes('shadow')){const host=document.createElement('div');if(classes.includes('transform'))host.style.transform='rotate(3deg) scale(.93)';parent.append(host);const root=host.attachShadow({mode:'open'});root.innerHTML='<style>'+document.querySelector('style').textContent+'</style>';parent=root}
+ const subject=document.createElement('div');subject.id=id;subject.className='subject '+(classes.includes('scroll')?'scroll ':'')+(classes.includes('pseudo')?'pseudo':'');subject.style.cssText=style;subject.innerHTML='<div class="content"><i class="marker"></i></div>';parent.append(subject);subject.scrollLeft=left;subject.scrollTop=top;
+}
+</script></body></html>

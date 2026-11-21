@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animated carousel capture</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#fff;font:16px Arial;--tone:#287c89}
+.carousel{width:320px;padding:16px;background:#31586f;color:white;border-radius:8px}
+.caption{margin:0 0 16px}.dots{display:flex;align-items:center;height:22px;gap:8px;margin:0;padding:0;list-style:none}
+.dot{position:relative;overflow:hidden;width:8px;height:8px;border-radius:50%;background:#ffffff66;flex:none}
+.dot.active{width:14px;height:14px;background:transparent}.half{position:absolute;left:0;width:14px;height:7px;background:#fff}
+.top{top:0;border-radius:7px 7px 0 0;transform-origin:7px 7px;animation:upper .8s linear infinite}
+.bottom{top:7px;border-radius:0 0 7px 7px;transform-origin:7px 0;animation:lower .8s linear infinite}
+.top::after,.bottom::before{content:"";position:absolute;left:0;top:7px;width:14px;height:1px;background:#fff}.bottom::before{top:-1px}
+@keyframes upper{50%{transform:rotate(-28deg)}}@keyframes lower{50%{transform:rotate(28deg)}}
+.native-swatch,.timer-tile,.raf-tile{width:32px;height:32px;background:var(--tone)}
+.native-swatch{margin-top:18px}.tiles{display:flex;gap:8px;margin-top:12px}.timer-tile,.raf-tile{filter:blur(0px)}
+.raf-tile{background:var(--frame-tone)}
+</style>
+<div class="carousel">
+  <p class="caption">Slide 0</p>
+  <ul class="dots">
+    <li class="dot active"><div class="half top"></div><div class="half bottom"></div></li>
+    <li class="dot"></li><li class="dot"></li><li class="dot"></li>
+  </ul>
+</div>
+<div class="native-swatch"></div>
+<div class="tiles"><div class="timer-tile"></div><div class="timer-tile"></div><div class="timer-tile"></div><div class="timer-tile"></div></div>
+<div class="tiles"><div class="raf-tile"></div><div class="raf-tile"></div><div class="raf-tile"></div><div class="raf-tile"></div></div>
+<script>
+let slide=0,frame=0;
+const colors=['#287c89','#d97034'];
+const update=()=>{document.body.style.setProperty('--tone',colors[slide]);document.querySelector('.caption').textContent='Slide '+slide;};
+setInterval(()=>{slide=1-slide;update();},80);
+const tick=()=>{document.body.style.setProperty('--frame-tone',colors[frame++%2]);requestAnimationFrame(tick);};
+update();tick();
+</script>
+</html>

@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Missing asset boundaries</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#eef2f7;font:16px/24px Arial;color:#263953;min-height:1100px}
+.slider{position:relative;transform:translateX(0);width:300px;height:440px;background:#fff;padding:16px}
+img{display:block;width:100px;height:48px;margin-bottom:16px}.zero{position:absolute;top:10px;width:0;height:20px}.fractional{left:50.375px}.outside{left:calc(100vw + 50px)}
+iframe{position:absolute;top:80px;width:240px;height:120px;border:0}.missing-background{position:absolute;top:260px;left:1800px;width:100px;height:80px;background-image:url('/missing-background-file.png')}
+.overflow-child{position:absolute;left:-1740px;top:0;width:72px;height:44px;background:#28a58c}.below-fold{position:absolute;left:0;top:920px}
+.zero-clip,.zero-mask,.failed-mask{position:absolute;top:360px}.zero-clip{left:20px;width:0;height:0;clip-path:circle(0px);background:url('/missing-background-file.png')}.zero-mask{left:260px;width:0;height:0;mask-image:url('/missing-mask-file.png')}.failed-mask{left:140px;width:100px;height:60px;background:#d95d62;mask-image:url('/missing-mask-file.png')}.mask-child{position:absolute;left:0;top:0;width:80px;height:60px;background:#d95d62}
+</style></head><body><div class="slider">
+<img id="valid-image" src="/visual-assets/pattern.png" alt="Available image">
+<img id="no-src-image" alt="No source">
+<img id="broken-image" src="/missing-image-file.png" alt="Missing image">
+<img id="empty-src-image" src="" alt="Empty source">
+<img id="outside-empty-image" class="zero outside" src="">
+<img id="fractional-zero-image" class="zero fractional">
+<iframe id="outside-frame" class="outside" srcdoc="<p>Outside the captured artboard</p>"></iframe>
+<div id="outside-background" class="missing-background"><div id="visible-overflow-child" class="overflow-child"></div></div>
+<div id="zero-clip" class="zero-clip"><div id="zero-clip-child" class="mask-child"></div></div>
+<div id="zero-mask" class="zero-mask"><div id="zero-mask-child" class="mask-child"></div></div>
+<div id="failed-mask" class="failed-mask"><div id="failed-mask-child" class="mask-child"></div></div>
+<img id="below-fold-image" class="below-fold" alt="Below fold">
+</div></body></html>

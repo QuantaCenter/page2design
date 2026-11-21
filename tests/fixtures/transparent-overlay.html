@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Transparent overlay hit testing</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#edf1f8;color:#273652;font:14px/20px Arial,sans-serif}h1{font-size:20px;line-height:24px;margin:0 0 24px}
+.card{width:280px;height:120px;padding:16px;background:#7360e8;border-radius:8px;margin-bottom:24px;color:white}.second{background:#19988d}.tail{height:650px}
+.overlay{position:fixed;inset:0;pointer-events:none}.sparse{z-index:20;transform:translateX(.5px)}.tool{position:absolute;left:320px;top:88px;width:44px;height:44px;background:#228ac9;border-radius:10px;pointer-events:auto}
+.empty{z-index:30;opacity:.99}.ring-overlay{z-index:40;width:100%;height:100%}
+</style></head><body><h1>Transparent overlay</h1><div class="card" id="first-card">First content</div><div class="card second" id="second-card">Second content</div><div class="tail"></div>
+<div class="overlay sparse" id="sparse-overlay"><div class="tool"></div></div>
+<div class="overlay empty" id="empty-overlay"><span hidden>Not painted</span></div>
+<canvas class="overlay ring-overlay" id="ring-overlay" width="390" height="844"></canvas>
+<script>
+// Keep a real unreadable-pixel fallback in this test. blur(0) now renders
+// natively, while cross-origin canvas contamination cannot be read back.
+const ring=document.getElementById('ring-overlay'),context=ring.getContext('2d'),image=new Image();
+image.onload=()=>{
+  context.drawImage(image,0,0,1,1);
+  context.clearRect(0,0,390,844);
+  context.strokeStyle='#df7d65';context.lineWidth=5;
+  context.beginPath();context.arc(162,266,19.5,0,Math.PI*2);context.stroke();
+};
+image.src=location.origin.replace('127.0.0.1','localhost')+'/visual-assets/pattern.png';
+</script>
+</body></html>

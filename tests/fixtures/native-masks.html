@@ -1,0 +1,58 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native clipping and masking</title><style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#eaf0f8;font:16px Arial}.case{position:relative;width:342px;height:196px;margin-bottom:20px;background:white;overflow:hidden}.subject,.under{position:absolute;left:24px;top:24px;width:280px;height:140px;border-radius:16px}.under{background:#a9c9d8}.subject{background:linear-gradient(120deg,#d75c74,#e9b84e);border:4px solid #526b8b;padding:12px}.subject b{pointer-events:none;color:#213e5b;background:#fff7}.part{position:absolute;left:180px;top:35px;width:115px;height:90px;background:#368dc1;border-radius:12px;pointer-events:none}.pseudo::before{content:'Generated';position:absolute;left:60px;top:30px;width:120px;height:70px;background:#fff8;clip-path:circle(45%)}
+</style></head><body><main id="cases"></main><script>
+const svg='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="50" viewBox="0 0 80 50"><path fill="white" fill-rule="evenodd" d="M0 0H80V50H0Z M25 10H55V40H25Z"/></svg>');
+const ratio='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><ellipse cx="40" cy="25" rx="35" ry="23" fill="#72a6d1"/></svg>');
+const a='radial-gradient(circle at 35% 50%,black 0 40%,transparent 42%)',b='linear-gradient(90deg,transparent 20%,black 22% 75%,transparent 77%)';
+const cases=[
+ ['circle','clip-path:circle()'],
+ ['circle-percent','clip-path:circle(40% at 35% 60%)'],
+ ['circle-far','clip-path:circle(farthest-side at 30% 40%)'],
+ ['ellipse','clip-path:ellipse(45% 35% at 40% 55%)'],
+ ['ellipse-side','clip-path:ellipse(closest-side farthest-side at 40% 35%)'],
+ ['inset','clip-path:inset(12px 24px 18px 10px round 24px 12px / 12px 30px)'],
+ ['inset-percent','clip-path:inset(15% 10% round 20%)'],
+ ['inset-negative','clip-path:inset(-15px -30px -10px 8px round 20px)'],
+ ['polygon','clip-path:polygon(10% 0,100% 20%,85% 90%,25% 100%,40% 45%,0 60%)'],
+ ['polygon-hole','clip-path:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,30% 25%,30% 75%,70% 75%,70% 25%,30% 25%,0 0)'],
+ ['path','clip-path:path("M 10 20 C 80 -20 200 0 250 30 Q 300 120 150 125 A 70 45 0 0 1 10 20 Z")'],
+ ['path-hole','clip-path:path(evenodd,"M0 0H280V140H0Z m90 35h100v70H90z")'],
+ ['rect','clip-path:rect(12px 90% 95% 15px round 22px)'],
+ ['xywh','clip-path:xywh(10% 12% 80% 75% round 20px 12px)'],
+ ['geometry','clip-path:content-box'],
+ ['geometry-shape','clip-path:ellipse(closest-side farthest-side) padding-box'],
+ ['clip-filter','clip-path:circle(42%);filter:blur(4px) drop-shadow(12px 8px 4px #2349);opacity:.75'],
+ ['clip-affine','clip-path:ellipse(45% 40%);transform:rotate(12deg) scale(.9,.8)'],
+ ['clip-perspective','clip-path:path(evenodd,"M0 0H280V140H0Z M90 35h100v70H90z");transform:perspective(450px) rotateY(24deg) rotateX(8deg)'],
+ ['clip-nested','clip-path:inset(8px round 22px)'],
+ ['clip-pseudo','clip-path:inset(8px round 22px)'],
+ ['mask-linear',`mask-image:${b}`],
+ ['mask-radial',`mask-image:${a}`],
+ ['mask-conic','mask-image:conic-gradient(from 30deg,black,transparent 30%,black 60%,transparent)'],
+ ['mask-alpha','mask-image:linear-gradient(90deg,#f22a51aa,#247fb3);mask-mode:alpha'],
+ ['mask-luminance','mask-image:linear-gradient(90deg,#f22a51aa,#247fb3);mask-mode:luminance'],
+ ['mask-image',`mask-image:url("${svg}");mask-size:100% 100%;mask-repeat:no-repeat`],
+ ['mask-ratio',`mask-image:url("${ratio}");mask-size:75% auto;mask-position:right 12px bottom 8px;mask-repeat:no-repeat`],
+ ['mask-set',`mask-image:image-set(url("${svg}") 2x);mask-position:13px 9px`],
+ ['mask-repeat',`mask-image:url("${svg}");mask-size:70px 40px;mask-repeat:space round;mask-origin:content-box;mask-clip:padding-box`],
+ ...['add','subtract','intersect','exclude'].map(mode=>['mask-'+mode,`mask-image:${a},${b};mask-composite:${mode},intersect`]),
+ ['mask-no-clip','mask-image:linear-gradient(90deg,black,black);mask-clip:no-clip;mask-size:100% 100%;mask-repeat:repeat;box-shadow:8px 9px 8px #2349'],
+ ['mask-fade',`mask-image:-webkit-cross-fade(url("${svg}"),url("${ratio}"),.4);mask-size:100% 100%;mask-repeat:no-repeat`],
+ ['mask-filter','mask-image:radial-gradient(ellipse,black,transparent 75%);filter:blur(4px) drop-shadow(8px 9px 3px #2349);clip-path:inset(-10px 4px round 18px);opacity:.7'],
+ ['mask-affine',`mask-image:${a};transform:rotate(12deg) scale(.9,.8);opacity:.8`],
+ ['mask-perspective',`mask-image:${a};transform:perspective(450px) rotateY(24deg) rotateX(8deg)`],
+ ['mask-nested',`mask-image:${b}`],
+ ['polygon-round','clip-path:polygon(round 18px,10% 0,100% 20%,85% 90%,25% 100%,40% 45%,0 60%)'],
+ ['polygon-round-large','clip-path:polygon(evenodd round 80px,0 0,100% 0,80% 100%,0 80%)'],
+ ['shape-lines','clip-path:shape(from 5% 10%,hline by 80%,vline to 90%,line by -40% -30%,line to 5% 80%,close)'],
+ ['shape-curve','clip-path:shape(from 0% 60%,curve to 95% 20% with 20% -40% / 80% 120%,smooth to 10% 90% with 0% 50%,close)'],
+ ['shape-quadratic','clip-path:shape(from 10% 20%,curve by 50% 0% with 20% -20%,smooth by 20% 60%,curve to 10% 90% with 0% 80%,close)'],
+ ['shape-anchors','clip-path:shape(from 10% 20%,curve by 60% 0% with 0% -20% from start / 0% 20% from end,smooth to 20% 90% with 40% 20% from origin,close)'],
+ ['shape-arcs','clip-path:shape(from 20% 20%,arc to 80% 20% of 30% cw large rotate 20deg,arc by 0% 60% of 40px 60px ccw small,line to 20% 80%,close)'],
+ ['shape-hole','clip-path:shape(evenodd from 0px 0px,hline to 100%,vline to 100%,hline to 0px,close,move to 30% 25%,hline by 40%,vline by 50%,hline by -40%,close)'],
+ ['shape-position','clip-path:shape(from 20px 10px,hline to right,vline to bottom,curve to left bottom with center bottom,line to left 20px,close)'],
+ ['geometry-margin','clip-path:margin-box;margin:12px'],
+ ['svg-root','mask-image:linear-gradient(black,black)']
+];
+document.getElementById('cases').innerHTML=cases.map(([id,style])=>`<section class="case" id="case-${id}"><div class="under" id="${id}-under"></div><div class="subject ${id==='clip-pseudo'?'pseudo':''}" id="${id}" style='${style}'>${id==='svg-root'?'<svg viewBox="0 0 100 50" style="width:100%;height:100%;clip-path:circle(45%);filter:blur(1px) drop-shadow(3px 2px 1px #2349);mask-image:linear-gradient(black,transparent)"><rect width="100" height="50" fill="#359dc4"/><circle cx="50" cy="25" r="20" fill="#d84673"/></svg>':`<b>Native</b><div class="part" ${id==='clip-nested'?'style="clip-path:circle(40%);filter:blur(2px)"':id==='mask-nested'?'style="mask-image:linear-gradient(black,transparent);opacity:.7"':''}></div>`}</div></section>`).join('');
+</script></body></html>

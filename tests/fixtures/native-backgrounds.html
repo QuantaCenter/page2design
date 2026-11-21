@@ -1,0 +1,44 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native CSS backgrounds</title><style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#eaf0f8;font:16px Arial}.case{position:relative;width:342px;height:200px;margin-bottom:20px;background:#fff;padding:24px;overflow:hidden}.subject{width:290px;height:150px;border-radius:16px;border:4px solid #536b8b;padding:9px;background-color:#d4deee}.subject b{position:relative;background:#fff5;color:#23385a}
+</style></head><body><main id="cases"></main><script>
+const image='/visual-assets/pattern.png';
+const vector='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" fill="#e6b651"/><circle cx="40" cy="25" r="19" fill="#418db8"/></svg>');
+const translucent='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="50"><rect width="80" height="50" fill="#e96c70" fill-opacity=".35"/><circle cx="40" cy="25" r="19" fill="#418db8" fill-opacity=".6"/></svg>');
+const cases=[
+ ['linear-oklab','background-image:linear-gradient(100deg in oklab,#f21a30,#286ed2)'],
+ ['linear-hint','background-image:linear-gradient(110deg,#f21a30,20%,#286ed2)'],
+ ['linear-srgb-linear','background-image:linear-gradient(90deg in srgb-linear,#000,#fff)'],
+ ['radial-oklch','background-image:radial-gradient(ellipse at 30% 40% in oklch longer hue,#e5396c,#29a89c)'],
+ ['conic-hint','background-image:conic-gradient(from 20deg in hsl increasing hue,#e54b5c,25%,#2b91c4)'],
+ ['linear-alpha','background-image:linear-gradient(90deg,rgba(180,15,60,.1),rgba(20,150,210,.9));background-color:#d8e9c2'],
+ ['radial-default','background-image:radial-gradient(#e6b651,#d95d62 50%,#526dca)'],
+ ['radial-ellipse','background-image:radial-gradient(ellipse at 30% 35%,#e6b651,#d95d62 50%,#526dca)'],
+ ['radial-circle','background-image:radial-gradient(circle closest-side at 60% 35%,#e6b651,#d95d62 50%,#526dca)'],
+ ['radial-corner','background-image:radial-gradient(ellipse closest-corner at 20% 70%,#e6b651,#d95d62 50%,#526dca)'],
+ ['radial-length','background-image:radial-gradient(90px 45px at 30% 40%,#e6b651,#d95d62 40%,#526dca)'],
+ ['radial-percent','background-image:radial-gradient(60% 35% at 30% 40%,#e6b651,#d95d62 40%,#526dca)'],
+ ['radial-negative','background-image:radial-gradient(circle at 30% 40%,#d95d62 -40px,#e6b651 20px,#526dca 110px)'],
+ ['radial-repeat','background-image:repeating-radial-gradient(ellipse at 40% 45%,#e6b651 0 10px,#418db8 10px 22px)'],
+ ['conic-default','background-image:conic-gradient(#d95d62,#e6b651,#418db8,#d95d62)'],
+ ['conic-position','background-image:conic-gradient(from 20deg at 40% 60%,#d95d62,#e6b651,#418db8,#d95d62)'],
+ ['conic-stops','background-image:conic-gradient(from -30deg at 30% 60%,#d95d62 -60deg,#e6b651 20%,#418db8 70%,#d95d62 400deg)'],
+ ['conic-repeat','background-image:repeating-conic-gradient(from 15deg,#e6b651 0 20deg,#418db8 20deg 40deg)'],
+ ['multi-gradient','background-image:linear-gradient(20deg,transparent,#d95d6288),linear-gradient(130deg,#e6b651,#418db8)'],
+ ['multi-image',`background-image:linear-gradient(20deg,transparent,#d95d6288),url("${image}");background-size:100% 100%,90px 55px;background-position:center,right 8px bottom 6px;background-repeat:no-repeat,space round;background-origin:border-box,content-box;background-clip:padding-box,content-box`],
+ ['multi-svg',`background-image:linear-gradient(30deg,transparent,#d95d6266),url("${vector}");background-size:auto,90px 60px;background-position:0% 0%,15px 12px;background-repeat:no-repeat,repeat;background-origin:padding-box,content-box`],
+ ['blend','background-image:linear-gradient(#35a89c88,#35a89c88),linear-gradient(120deg,#d95d62,#e6b651);background-blend-mode:multiply,screen;background-color:transparent'],
+ ['size-repeat','background-image:radial-gradient(circle,#e6b651 0 40%,#418db8 42%);background-size:70px 46px;background-position:13px 11px;background-repeat:space round;background-origin:content-box'],
+ ['gradient-calc','background-image:linear-gradient(125deg,#e6b651 calc(10% + 5px),#d95d62 calc(60% - 8px),#418db8);background-size:calc(100% - 20px) calc(100% - 10px);background-position:calc(50% + 3px) center;background-repeat:no-repeat'],
+ ['radial-calc','background-image:radial-gradient(ellipse calc(40px + 30px) calc(20px + 20px) at calc(40% + 3px) 60%,#e6b651,#d95d62 50%,#526dca)'],
+ ['image-set',`background-image:image-set(url("${image}") 2x);background-repeat:repeat;background-position:13px 17px`],
+ ['image-set-type',`background-image:image-set(url("${image}") type("image/unsupported") 1x,"${vector}" type("image/svg+xml") 2x);background-size:90px 70px;background-repeat:space`],
+ ['image-set-png-type',`background-image:image-set(url("${vector}") type("image/unsupported") 1x,url("${image}") type("image/png") 2x);background-repeat:repeat;background-position:13px 17px`],
+ ['image-set-svg',`background-image:image-set(url("${vector}") 2x);background-size:90px 70px;background-repeat:space`],
+ ['image-set-gradient','background-image:image-set(linear-gradient(120deg,#e6b651,#418db8) 1x,radial-gradient(#e6b651,#418db8) 2x)'],
+ ['cross-fade',`background-image:-webkit-cross-fade(url("${image}"),url("${vector}"),.4);background-size:100% 100%;background-repeat:no-repeat`],
+ ['cross-fade-alpha',`background-image:-webkit-cross-fade(url("${translucent}"),url("${vector}"),60%);background-size:100% 100%;background-repeat:no-repeat`],
+ ['cross-fade-natural',`background-image:-webkit-cross-fade(url("${image}"),url("${translucent}"),.25);background-repeat:repeat;background-position:13px 17px`],
+ ['cross-fade-ratio',`background-image:-webkit-cross-fade(url("${image}"),url("${vector}"),.4);background-repeat:repeat;background-position:13px 17px`],
+ ['cross-fade-nested',`background-image:-webkit-cross-fade(-webkit-cross-fade(url("${translucent}"),url("${vector}"),.5),url("${image}"),.3);background-size:100% 100%;background-repeat:no-repeat`]
+];document.getElementById('cases').innerHTML=cases.map(([id,style])=>`<section class="case" id="case-${id}"><div class="subject" id="${id}" style='${style}'></div></section>`).join('');
+</script></body></html>

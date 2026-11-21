@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Complex visual rendering laboratory</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f3f5fa;color:#273652;font:14px/1.5 Arial,sans-serif}
+    main{max-width:1160px;margin:auto;padding:24px 16px}h1{font-size:25px;margin:0 0 6px}p{margin:0 0 22px;color:#68758b}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+    .case{background:white;border-radius:12px;padding:16px}.case h2{font-size:13px;margin:0 0 12px;line-height:20px}
+    .stage{height:184px;background:#edf1f8;position:relative}
+    .subject{position:absolute;left:36px;top:36px;width:220px;height:104px;background-color:#7385dc}
+    img.subject,svg.subject{background-color:#d7deec;display:block}
+    .backdrop{position:absolute;inset:12px;background:linear-gradient(30deg,#f1b85d,#b659b6 45%,#469db8)}
+    .overlap{position:absolute;left:190px;top:112px;width:70px;height:36px;background:rgba(230,70,100,.45);border-radius:6px}
+    .shadow-label{position:absolute;left:15px;top:25px;font-size:27px;font-weight:bold;color:white;white-space:nowrap}
+  </style>
+</head>
+<body><main><h1>Complex visuals / Canvas</h1><p>Images, SVG, gradients, filters and shadows. Fixed capture, independent layers.</p><div class="gallery" id="gallery"></div></main>
+<script>
+const image = '/visual-assets/pattern.png';
+const img = (style,src=image) => `<img class="subject" alt="adapted image" src="${src}" style="${style}" />`;
+const box = style => `<div class="subject" style="${style}"></div>`;
+const svg = (content,style='') => `<svg class="subject" style="${style}" viewBox="0 0 160 96" xmlns="http://www.w3.org/2000/svg">${content}</svg>`;
+const cases = [
+  ['image-fill','Image / fill',img('object-fit:fill'),'image'],
+  ['image-contain','Image / contain',img('object-fit:contain;object-position:50% 50%;border:3px solid #5d6d8b'),'image'],
+  ['image-cover','Image / cover + percent position',img('object-fit:cover;object-position:25% 75%;border-radius:18px'),'image'],
+  ['image-none','Image / none + pixel position',img('object-fit:none;object-position:14px 6px'),'image'],
+  ['image-scale-down','Image / scale-down',img('object-fit:scale-down;object-position:right bottom'),'image'],
+  ['image-edge-position','Image / edge offset',img('object-fit:none;object-position:right 12px bottom 8px'),'image'],
+  ['image-padding','Image / padding + radius',img('object-fit:contain;object-position:left top;padding:8px 14px;border:4px solid #5d6d8b;border-radius:20px'),'image'],
+  ['background-cover','Background / cover + offset',box(`background-image:url(${image});background-size:cover;background-position:70% 30%;background-repeat:no-repeat`),'frame'],
+  ['background-contain','Background / contain + repeat',box(`background-image:url(${image});background-size:contain;background-position:center;background-repeat:repeat`),'frame'],
+  ['background-position','Background / fixed size + edge offset',box(`background-image:url(${image});background-size:80px auto;background-position:right 12px bottom 8px;background-repeat:no-repeat`),'frame'],
+  ['background-repeat-x','Background / repeat-x + scaled tile',box(`background-image:url(${image});background-size:60px 36px;background-position:13px 21px;background-repeat:repeat-x`),'frame'],
+  ['background-repeat-y','Background / repeat-y + percent tile',box(`background-image:url(${image});background-size:35% auto;background-position:75% 12px;background-repeat:repeat-y`),'frame'],
+  ['background-space','Background / space + round',box(`background-image:url(${image});background-size:60px 38px;background-repeat:space round`),'frame'],
+  ['background-padding','Background / content-box origin',box(`padding:12px;border:4px solid #5d6d8b;background:#8b9fe1 url(${image}) right bottom / 85% auto no-repeat content-box`),'frame'],
+  ['svg-basic','SVG / currentColor + padded border',svg('<path d="M20 72 54 20 88 72z" fill="currentColor"/><circle cx="115" cy="45" r="23" fill="none" stroke="currentColor" stroke-width="7"/>','color:#bf4a78;padding:8px 12px;border:4px solid #5d6d8b;border-radius:16px'),'svg'],
+  ['svg-gradient','SVG / defs + gradient',svg('<defs><linearGradient id="svg-paint"><stop stop-color="#e5a84f"/><stop offset=".55" stop-color="#9c57bc"/><stop offset="1" stop-color="#347eba"/></linearGradient></defs><rect x="10" y="10" width="140" height="76" rx="16" fill="url(#svg-paint)"/>'),'svg'],
+  ['svg-clip','SVG / clipping + CSS paint',svg('<defs><clipPath id="svg-cutout"><circle cx="80" cy="48" r="40"/></clipPath></defs><g clip-path="url(#svg-cutout)"><rect width="160" height="96" fill="#d95d62"/><path d="M0 0h160L0 96z" class="svg-triangle"/></g>'),'svg'],
+  ['svg-use','SVG / use outside the SVG root',svg('<use href="#shared-symbol" x="30" y="8" width="100" height="80"/>'),'svg'],
+  ['svg-css-transform','SVG / CSS transformed child',svg('<rect x="10" y="15" width="70" height="45" rx="6" style="fill:#53b394;transform:translate(25px,8px) rotate(12deg);transform-origin:center;stroke:#273652;stroke-width:3"/>'),'svg'],
+  ['svg-filter','SVG / filter + transparency',svg('<defs><filter id="svg-shadow"><feDropShadow dx="4" dy="4" stdDeviation="4" flood-color="#445577"/></filter></defs><circle cx="80" cy="44" r="28" fill="#d95d62" filter="url(#svg-shadow)" opacity=".7"/>'),'svg'],
+  ['svg-external','SVG / external image + aspect ratio',img('object-fit:contain','/visual-assets/pattern.svg'),'image'],
+  ['svg-linked-image','SVG / linked bitmap',svg('<image href="/visual-assets/pattern.png" x="10" y="10" width="140" height="76" preserveAspectRatio="xMaxYMin slice"/>'),'svg'],
+  ['gradient-linear','Gradient / 35 degrees',box('background:linear-gradient(35deg,#db604f,#8e62c5,#3c9ab8)'),'frame'],
+  ['gradient-corner','Gradient / to bottom right',box('background:linear-gradient(to bottom right,#e8bb55,#546bca)'),'frame'],
+  ['gradient-stops','Gradient / implicit + explicit stops',box('background:linear-gradient(90deg,#df6860 12%,#e4c86a,#53b394 80%,#418db8)'),'frame'],
+  ['gradient-hard-stops','Gradient / double-position stops',box('background:linear-gradient(90deg,#e6b651 0 35%,#d95d62 35% 65%,#418db8 65%)'),'frame'],
+  ['gradient-outside','Gradient / stops outside the box',box('background:linear-gradient(90deg,#d95d62 -60px,#e5bb54 50px,#418db8 280px)'),'frame'],
+  ['gradient-repeat','Gradient / repeating + pixel stops',box('background:repeating-linear-gradient(125deg,#e6b651 0px,#e6b651 10px,#418db8 10px,#418db8 22px)'),'frame'],
+  ['gradient-radial','Gradient / radial',box('background:radial-gradient(ellipse at 30% 35%,#e6b651,#d95d62 50%,#526dca)'),'frame'],
+  ['gradient-conic','Gradient / conic',box('background:conic-gradient(from 20deg at 40% 60%,#d95d62,#e6b651,#418db8,#d95d62)'),'frame'],
+  ['gradient-multiple','Gradient / multiple layers',box('background:linear-gradient(20deg,transparent,#d95d6288),linear-gradient(130deg,#e6b651,#418db8)'),'frame'],
+  ['shadow-basic','Shadow / offset + blur',box('border-radius:16px;box-shadow:6px 9px 14px rgba(42,54,95,.4)'),'frame'],
+  ['shadow-spread','Shadow / positive spread',box('border-radius:18px;box-shadow:0 5px 8px 8px rgba(42,54,95,.35)'),'frame'],
+  ['shadow-negative','Shadow / negative spread',box('border-radius:16px;box-shadow:-8px 9px 12px -5px rgba(42,54,95,.5)'),'frame'],
+  ['shadow-multiple','Shadow / two layers',box('border-radius:12px;box-shadow:-8px -6px 0 2px #e4ba63,8px 8px 12px 4px #4866a270'),'frame'],
+  ['shadow-transparent','Shadow / transparent fill',box('background:transparent;border:3px solid #7385dc;border-radius:18px;box-shadow:4px 8px 12px 3px rgba(42,54,95,.45)'),'frame'],
+  ['shadow-inset','Shadow / inset',box('border-radius:16px;box-shadow:inset 4px 6px 13px 4px rgba(20,30,70,.5)'),'frame'],
+  ['shadow-text','Shadow / text',`<div class="subject"><span class="shadow-label" style="text-shadow:3px 4px 5px #273652">Canvas text</span></div>`,'frame'],
+  ['filter-blur','Filter / blur outside bounds',box('border-radius:16px;filter:blur(7px)'),'frame'],
+  ['filter-drop-shadow','Filter / drop-shadow outside bounds',img('object-fit:contain;background:transparent;filter:drop-shadow(9px 10px 8px rgba(30,50,90,.65))'),'image'],
+  ['filter-color','Filter / brightness + saturation',img('object-fit:cover;filter:brightness(.75) saturate(1.8) contrast(1.3)'),'image'],
+  ['filter-backdrop','Filter / backdrop + alpha overlay',`<div class="backdrop"></div>${box('background:#ffffff55;border:2px solid #ffffff88;border-radius:16px;backdrop-filter:blur(10px) saturate(.65)')}<div class="overlap"></div>`,'frame'],
+  ['filter-overlap','Filter / alpha overlay after blur',`${box('filter:blur(5px);border-radius:12px')}<div class="overlap"></div>`,'frame'],
+  ['filter-clipped','Filter / rounded ancestor clipping',`<div style="position:absolute;left:36px;top:30px;width:220px;height:122px;border-radius:22px;overflow:hidden;background:#e4ba63"><div class="subject" style="left:120px;top:26px;width:130px;height:104px;filter:blur(7px)"></div></div>`,'frame'],
+];
+document.getElementById('gallery').innerHTML = cases.map(([id,title,content,kind],i)=>`<section class="case" id="${id}" data-kind="${kind}"><h2>${String(i+1).padStart(2,'0')} / ${title}</h2><div class="stage">${content}</div></section>`).join('');
+document.querySelectorAll('.subject').forEach(element=>{element.id = element.closest('.case').id + '-subject';element.setAttribute('aria-label',element.id);});
+</script>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute"><defs><symbol id="shared-symbol" viewBox="0 0 100 80"><path fill="#d95d62" d="M50 2 98 78H2z"/><circle cx="50" cy="51" r="15" fill="#f4b942"/></symbol></defs></svg>
+<style>.svg-triangle{fill:#418db8;stroke:#f4b942;stroke-width:5}</style>
+</body>
+</html>

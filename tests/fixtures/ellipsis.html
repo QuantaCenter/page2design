@@ -1,0 +1,25 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Native ellipsis text</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#fff;font:16px/22px Arial;color:#25334d}
+.case{margin-bottom:24px}.subject{width:248px;overflow:hidden;margin:0}
+.single{white-space:nowrap;text-overflow:ellipsis}.multi{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.three{-webkit-line-clamp:3}.padded{width:270px;padding:8px 11px;border:1px solid #c6cede;border-radius:4px}
+.spaced{letter-spacing:1.2px}.badge{background:#f5dfba;border-radius:3px}a{color:inherit;text-decoration:none}.accent{color:#b44668}
+.bili{font:400 15px/22px system-ui;padding-right:16px;text-indent:-9px;text-overflow:ellipsis}.bili a{font-weight:500}
+</style>
+<div class="case"><p id="single-english" class="subject single">English words 2026 with a long title that must end with an ellipsis</p></div>
+<div class="case"><p id="single-chinese" class="subject single">这是一个包含中文和 English words 2026 的很长标题，需要显示省略号并保留完整文本。</p></div>
+<div class="case"><p id="single-emoji" class="subject single spaced">组件 👨‍👩‍👧‍👦 family / 🇨🇳 中文 / 👩🏽‍💻 frontend teaching and Unicode graphemes</p></div>
+<div class="case"><p id="single-nested" class="subject single">普通文字 <strong>bold English words</strong> <span class="accent">带颜色的中文标题仍然需要正确省略</span></p></div>
+<div class="case"><p id="multi-chinese" class="subject multi">这是用于验证两行省略效果的长标题，包含中英文 English words、数字 2026，以及最后不会显示出来的完整内容，仍然要能在属性面板中读取。</p></div>
+<div class="case"><p id="multi-english" class="subject multi">English words 2026 very long multiple lines abcdefghij need an ellipsis after the second visible line and keep this hidden suffix.</p></div>
+<div class="case"><h3 id="multi-link" class="subject multi" style="font-size:17px;line-height:22px;font-weight:500"><a href="#example">【NCT WISH】NCT WISH《1000》Special Video 超长视频标题，需要在第二行结束后省略，但仍保留完整的文字信息用于前端教学。</a></h3></div>
+<div class="case"><p id="multi-nested" class="subject multi">这是普通文字，<strong>这是粗体 English words mixed with 中文</strong>，<span class="accent">后面是带颜色的长标题，需要多行省略并保留各个文字片段样式。</span></p></div>
+<div class="case"><p id="multi-padded" class="subject multi padded">带有内边距和边框的两行标题，English words 2026，验证文字的裁剪区域和省略号不会偏移，同时保留完整的文本信息。</p></div>
+<div class="case"><p id="multi-three" class="subject multi three">这是三行省略的长文本，混合中文、English words、数字 2026，用于检查保留行数和最后一行的省略号。完整内容应当仍可查看，隐藏的文字不应该绘制到画布的后续内容上。</p></div>
+<div class="case"><h3 id="multi-bili-short" class="subject multi bili"><a>【乐园全回顾】人攀明月不可得，月行却与人相随</a></h3></div>
+<div class="case"><h3 id="multi-bili-long" class="subject multi bili"><a>【影之刃零】最新版本 | 影之刃零MOD整合包 | 清凉&amp;功能&amp;性转语音&amp;DLSS5画质MOD+影之刃零MOD安装教程</a></h3></div>
+<div class="case"><p id="short-text" class="subject multi">短标题，不需要省略。</p></div>
+<div class="case"><p id="complex-mixed" class="subject multi"><span class="badge">有背景的标签</span> 与复杂混排的长标题仍应保留原始文案供查看，即使需要局部截图，也不应该丢失整个文字内容与字号信息。</p></div>
+</html>

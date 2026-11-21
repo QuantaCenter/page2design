@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Page to Design Core · Standalone</title>
+<style>
+body{margin:24px;background:#f3f5fa;color:#27344d;font:15px/1.6 system-ui}main{max-width:1040px;margin:auto}h1{font-size:24px;margin-bottom:6px}p{color:#66718a}
+button{border:1px solid #d9dfec;background:white;color:#33415e;border-radius:7px;padding:8px 14px;cursor:pointer}nav{display:flex;gap:8px;margin:20px 0}
+canvas{display:block;width:700px;height:440px;background:#e8ecf3;touch-action:none;border:1px solid #d3daea;border-radius:8px;max-width:100%}
+textarea{box-sizing:border-box;width:100%;height:180px;border:1px solid #d3daea;border-radius:8px;padding:12px;font:12px/1.5 monospace}pre{white-space:pre-wrap;font-size:12px;padding:12px;background:#fff;border-radius:8px}iframe{width:300px;height:140px;border:1px solid #d3daea}
+</style>
+<main><h1>Prepared information → Canvas</h1><p>No application UI or React is required. Edit the supplied snapshot, zoom with the wheel, drag to pan, or click a layer.</p>
+<nav><button id="draw">Draw snapshot</button><button id="fit">Fit</button><button id="export">Export PNG</button><button id="dom">Process supplied Document</button></nav>
+<canvas id="canvas" aria-label="Standalone canvas"></canvas><pre id="selection">Click a layer.</pre><pre id="result">Preparing…</pre>
+<details><summary>Input snapshot</summary><textarea id="snapshot" aria-label="Snapshot JSON"></textarea></details>
+<details open><summary>Document supplied by the host</summary><iframe title="Supplied document" srcdoc="<!doctype html><html lang='en'><title>Supplied document</title><style>body{margin:12px;font:16px Arial}.card{padding:12px;background:#e4dcff;border-radius:8px}</style><div class='card'>This Document was supplied by the host.</div>"></iframe></details>
+</main>
+<script type="module">
+import {convertSnapshot, fitCamera, zoomAt} from '../dist/index.js';
+import {loadDocumentResources, CanvasRenderer} from '../dist/canvas/index.js';
+import {collectDomLayout, collectDomTables} from '../dist/dom/index.js';
+const canvas=document.querySelector('#canvas'), textarea=document.querySelector('#snapshot'), result=document.querySelector('#result');
+const width=700,height=440;
+let renderer,resources,design,camera={x:0,y:0,scale:1},drag;
+const makeNode=(id,box,style,kind='frame')=>({id,parentId:null,children:[],kind,name:id,tag:'div',box,contentBox:box,padding:{top:0,right:0,bottom:0,left:0},margin:{top:0,right:0,bottom:0,left:0},border:{top:0,right:0,bottom:0,left:0},radius:[0,0,0,0],opacity:1,clips:[],style,order:0,paintOrder:0,hasVisual:true});
+const bitmap=document.createElement('canvas');bitmap.width=640;bitmap.height=400;bitmap.getContext('2d').fillStyle='#2f9fd4';bitmap.getContext('2d').fillRect(520,32,72,44);
+const card=makeNode('card',{x:24,y:32,width:180,height:100},{'background-color':'#7360e8'});
+const clipped=makeNode('clipped',{x:240,y:32,width:160,height:100},{'background-color':'#f36b7f'});clipped.clips=[{...clipped.box,radius:[28,28,28,28]}];
+const title=makeNode('title',{x:24,y:180,width:270,height:30},{'font-family':'Arial','font-size':'18px','font-weight':'400',color:'#27344d'},'text');
+title.text='Prepared data → Canvas, with a full original string retained for inspection.';
+title.textOverflow={mode:'ellipsis',maxLines:1,truncated:true,visibleText:'Prepared data → Canvas…'};
+title.runs=[{x:24,y:180,width:220,height:24,text:'Prepared data → Canvas',baseline:202,fontFamily:'Arial',fontSize:18,fontWeight:'400',fontStyle:'normal',letterSpacing:0,color:'#27344d',decoration:'none',language:'en'},{x:244,y:180,width:18,height:24,text:'…',baseline:202,fontFamily:'Arial',fontSize:18,fontWeight:'400',fontStyle:'normal',letterSpacing:0,color:'#27344d',decoration:'none',language:'en',generated:'ellipsis'}];
+const floating=makeNode('floating',{x:0,y:0,width:640,height:400},{position:'fixed','z-index':'100'},'raster');floating.assetId='bitmap';floating.rasterBox=floating.box;
+const snapshot={id:'standalone-snapshot',capturedAt:'2026-11-16T00:00:00.000Z',title:'Standalone data',viewport:{width:640,height:400},width:640,height:400,background:'#fff',nodes:[card,clipped,title,floating].map((n,i)=>({...n,order:i,paintOrder:i})),assets:[{id:'bitmap',mime:'image/png',dataUrl:bitmap.toDataURL()}],fonts:[]};
+textarea.value=JSON.stringify(snapshot,null,2);
+const paint=()=>{renderer.render(canvas,{width,height,camera,pixelRatio:devicePixelRatio});canvas.dataset.camera=JSON.stringify(camera);};
+async function load(input){
+ const next=convertSnapshot(input,{structure:'flat'}), decoded=await loadDocumentResources(next);
+ renderer?.dispose();resources?.dispose();design=next;resources=decoded;renderer=new CanvasRenderer(design,resources);camera=fitCamera(design,{width,height});paint();
+ const probes=design.id==='standalone-snapshot'?{under:renderer.hitTest({x:70,y:70})?.id,button:renderer.hitTest({x:550,y:50})?.id,clipCorner:renderer.hitTest({x:240.5,y:32.5})?.id||null,clipCenter:renderer.hitTest({x:300,y:70})?.id}:{};
+ result.textContent=JSON.stringify({id:design.id,width:design.width,nodes:design.nodes.length,flat:design.nodes.every(n=>n.parentId===null),errors:resources.errors,...probes});canvas.dataset.ready='true';
+}
+document.querySelector('#draw').onclick=()=>load(JSON.parse(textarea.value)).catch(e=>result.textContent=String(e));
+document.querySelector('#fit').onclick=()=>{camera=fitCamera(design,{width,height});paint();};
+document.querySelector('#export').onclick=()=>{const a=document.createElement('a');a.download='standalone.png';a.href=renderer.toCanvas().toDataURL();a.click();};
+document.querySelector('#dom').onclick=async()=>{try{const source=document.querySelector('iframe').contentDocument, layout=collectDomLayout({document:source,fullPage:false,maxHeight:800,maxNodes:200});await load({...layout,id:'supplied-document',capturedAt:snapshot.capturedAt,viewport:{width:source.defaultView.innerWidth,height:source.defaultView.innerHeight},tables:collectDomTables({document:source}),assets:[],fonts:[]});}catch(e){result.textContent=String(e);}};
+const point=event=>{const b=canvas.getBoundingClientRect();return{x:(event.clientX-b.x)/b.width*width,y:(event.clientY-b.y)/b.height*height};};
+canvas.onwheel=event=>{event.preventDefault();camera=zoomAt(camera,point(event),camera.scale*Math.exp(-event.deltaY*.0015));paint();};
+canvas.onpointerdown=event=>{canvas.setPointerCapture(event.pointerId);drag={point:point(event),camera:{...camera},moved:false};};
+canvas.onpointermove=event=>{if(!drag)return;const p=point(event),dx=p.x-drag.point.x,dy=p.y-drag.point.y;if(Math.abs(dx)+Math.abs(dy)>3)drag.moved=true;camera={...drag.camera,x:drag.camera.x+dx,y:drag.camera.y+dy};paint();};
+canvas.onpointerup=event=>{if(!drag?.moved){const node=renderer.hitTest(point(event),camera);document.querySelector('#selection').textContent=node?JSON.stringify({id:node.id,kind:node.kind,text:node.text,box:node.box},null,2):'No layer.';}drag=null;};
+addEventListener('beforeunload',()=>{renderer?.dispose();resources?.dispose();});
+await load(snapshot);
+</script></html>

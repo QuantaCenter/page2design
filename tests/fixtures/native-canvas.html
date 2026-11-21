@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native canvas pixels</title><style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#eef2f7;font:16px Arial}.case{position:relative;width:342px;padding:24px;margin-bottom:24px;background:white;height:200px;overflow:hidden}
+canvas{display:block;width:270px;height:140px;object-fit:contain;object-position:75% 30%;border:3px solid #517696;border-radius:12px;padding:4px;background:#17253a}#canvas-2d{filter:saturate(.75)}#canvas-webgl2{transform:rotate(6deg);transform-origin:50% 50%}#canvas-empty{height:100px;background:#8ebcd7}
+</style></head><body>
+<section class="case" id="case-2d"><canvas id="canvas-2d" width="160" height="90"></canvas></section>
+<section class="case" id="case-webgl"><canvas id="canvas-webgl" width="160" height="90"></canvas></section>
+<section class="case" id="case-webgl2"><canvas id="canvas-webgl2" width="160" height="90"></canvas></section>
+<section class="case" id="case-empty"><canvas id="canvas-empty" width="0" height="0"></canvas></section>
+<section class="case" id="case-tainted"><canvas id="canvas-tainted" width="160" height="90"></canvas></section>
+<script>
+const paints=[[0,0,'#d44f64'],[80,0,'#34a38f'],[0,45,'#416db7'],[80,45,'#e5bd4e']];
+const context=document.getElementById('canvas-2d').getContext('2d');for(const [x,y,color]of paints){context.fillStyle=color;context.fillRect(x,y,80,45)}context.clearRect(66,30,28,30);
+for(const type of ['webgl','webgl2']){const canvas=document.getElementById('canvas-'+type),gl=canvas.getContext(type,{preserveDrawingBuffer:false});if(!gl)throw new Error(type+' missing');gl.enable(gl.SCISSOR_TEST);for(const[x,y,color]of paints){const rgb=color.slice(1).match(/../g).map(c=>parseInt(c,16)/255);gl.scissor(x,90-y-45,80,45);gl.clearColor(...rgb,1);gl.clear(gl.COLOR_BUFFER_BIT)}gl.disable(gl.SCISSOR_TEST)}
+const image=new Image();image.onload=()=>document.getElementById('canvas-tainted').getContext('2d').drawImage(image,0,0,160,90);image.src=location.origin.replace('127.0.0.1','localhost')+'/visual-assets/pattern.png';
+</script></body></html>

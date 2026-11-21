@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "options": {
+    "typeAware": true
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/*.tsbuildinfo",
+    "artifacts/**",
+    "test-results/**",
+    "playwright-report/**"
+  ],
+  "env": {
+    "browser": true,
+    "node": true
+  }
+}

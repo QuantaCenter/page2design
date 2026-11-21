@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SVG namespace compatibility</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;padding:24px;font:14px/20px Arial,sans-serif;background:#eef2f8;color:#273652}
+    h1{margin:0 0 20px;font-size:20px;line-height:24px}section{margin-bottom:16px;padding:12px;background:white}
+    h2{font-size:14px;margin:0 0 8px}svg.preview{display:block;width:160px;height:80px;background:#e5eaf3}
+  </style>
+</head>
+<body>
+  <h1>Namespace compatibility</h1>
+  <section><h2>DOM created namespace declarations</h2><div id="runtime-host"></div></section>
+  <section><h2>Qualified namespace attributes</h2><div id="qualified-host"></div></section>
+  <section><h2>Legacy image reference</h2><div id="image-host"></div></section>
+  <section><h2>Unusual framework attribute</h2><svg class="preview" id="framework-svg" viewBox="0 0 160 80" @click="noop"><rect x="24" y="16" width="112" height="48" rx="8" fill="#418db8"/></svg></section>
+  <p id="after-icons">Content after the SVGs remains available.</p>
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute"><defs><symbol id="shared-badge" viewBox="0 0 160 80"><rect x="24" y="16" width="112" height="48" rx="8" fill="#9a64bd"/></symbol></defs></svg>
+  <script>
+    const SVG_NS='http://www.w3.org/2000/svg', XLINK_NS='http://www.w3.org/1999/xlink', XML_NS='http://www.w3.org/XML/1998/namespace', XMLNS_NS='http://www.w3.org/2000/xmlns/';
+    function base(id){const svg=document.createElementNS(SVG_NS,'svg');svg.setAttribute('id',id);svg.setAttribute('class','preview');svg.setAttribute('viewBox','0 0 160 80');return svg;}
+    function use(svg){const use=document.createElementNS(SVG_NS,'use');use.setAttributeNS(XLINK_NS,'xlink:href','#shared-badge');svg.append(use);}
+    // React and other DOM renderers can create these declarations through
+    // setAttribute(). Their namespaceURI is null even though they contain a prefix.
+    const runtime=base('runtime-svg');runtime.setAttribute('xmlns',SVG_NS);runtime.setAttribute('xmlns:xlink',XLINK_NS);runtime.setAttribute('xml:space','preserve');use(runtime);document.getElementById('runtime-host').append(runtime);
+    const qualified=base('qualified-svg');qualified.setAttributeNS(XMLNS_NS,'xmlns',SVG_NS);qualified.setAttributeNS(XMLNS_NS,'xmlns:xlink',XLINK_NS);qualified.setAttributeNS(XML_NS,'xml:space','preserve');use(qualified);document.getElementById('qualified-host').append(qualified);
+    const bitmap=base('image-svg');bitmap.setAttribute('xmlns:xlink',XLINK_NS);const image=document.createElementNS(SVG_NS,'image');image.setAttribute('href','/visual-assets/pattern.png');image.setAttribute('xlink:href','/visual-assets/pattern.png');image.setAttribute('x','16');image.setAttribute('y','8');image.setAttribute('width','128');image.setAttribute('height','64');bitmap.append(image);document.getElementById('image-host').append(bitmap);
+  </script>
+</body>
+</html>

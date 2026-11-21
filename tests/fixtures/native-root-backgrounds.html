@@ -1,0 +1,51 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native document canvas backgrounds</title><style>
+*{box-sizing:border-box}html{font:16px Arial}body{margin:24px;padding:16px;border:4px solid #536b8b;border-radius:24px;height:920px;position:relative}#front{position:relative;display:block;width:140px;height:80px;background:#e96968;color:#fff;border:3px solid #653f73;border-radius:12px;text-align:center;line-height:74px;text-decoration:none}#back{position:absolute;z-index:-1;left:80px;top:72px;width:140px;height:120px;background:#b06aa6}#lower{position:absolute;top:740px;left:20px;width:100px;height:60px;background:#47a595}#overflow{position:absolute;left:10px;top:1060px;width:90px;height:80px;background:#edba53}
+body[data-case="body-contain"]::after{content:"";position:absolute;top:740px;left:150px;width:60px;height:50px;background:#967bd0}
+</style></head><body><div id="back"></div><a id="front" href="#">Native</a><div id="lower"></div><div id="overflow"></div><script>
+const image='url("/visual-assets/pattern.png")';
+const tile=`background-image:${image};background-size:80px 48px;background-repeat:repeat;background-position:13px 17px;background-color:#d4deee;`;
+const vertical='background:linear-gradient(#e6b651,#418db8) no-repeat;background-size:100% 100%;';
+const small='width:270px;height:180px;margin:12px;padding:10px;border:5px solid #75476a;border-radius:44px;';
+const blend='background-color:#d4deee;background-image:linear-gradient(90deg,#e6b651,#418db8),linear-gradient(45deg,#f8619a,#699352);background-size:80px 48px;background-repeat:repeat;background-blend-mode:multiply;';
+const cases={
+ 'root-fixed':[tile+'background-attachment:fixed;',''],
+ 'body-fixed':['',tile+'background-attachment:fixed;'],
+ 'root-local':[small+vertical+'background-attachment:local;',''],
+ 'body-local':[small,vertical+'background-attachment:local;background-origin:content-box;'],
+ 'root-scroll':[small+'background:radial-gradient(at 30% 40%,#e6b651,#418db8);background-clip:content-box;background-size:100% 100%;',''],
+ 'body-scroll':[small,vertical+'background-clip:content-box;background-origin:content-box;opacity:.6;'],
+ 'root-alpha':['background:rgba(38,118,200,.5);',''],
+ 'body-alpha':['','background:rgba(38,118,200,.5);filter:brightness(.7);opacity:.6;'],
+ 'root-filter':['filter:brightness(.7);','background:#2676c8;filter:grayscale(.5);'],
+ 'root-opacity':['opacity:.6;','background:#2676c8;'],
+ 'root-transform':['transform:scale(.78) rotate(3deg);transform-origin:0 0;',tile],
+ 'root-3d-affine':['transform:translate3d(30px,20px,1px) scale(.78);transform-origin:0 0;',tile],
+ 'root-3d-perspective':['transform:perspective(1000px) rotateY(10deg);transform-origin:0 0;',tile],
+ 'root-transform-filter':['transform:scale(.78) rotate(3deg);transform-origin:0 0;filter:blur(2px) brightness(.8);',tile],
+ 'root-clip':['clip-path:circle(145px at 160px 200px);transform:scale(.78) rotate(3deg);transform-origin:0 0;',tile],
+ 'root-mask':['mask-image:linear-gradient(90deg,transparent,#000 55%);transform:scale(.78) rotate(3deg);transform-origin:0 0;',tile],
+ 'root-mask-color':['filter:brightness(.8);mask-image:linear-gradient(90deg,transparent,#000 55%);transform:scale(.78) rotate(3deg);transform-origin:0 0;',tile],
+ 'root-mask-perspective':['mask-image:linear-gradient(90deg,transparent,#000 55%);transform:perspective(1000px) rotateY(10deg);transform-origin:0 0;',tile],
+ 'root-mask-perspective-center':['mask-image:linear-gradient(90deg,transparent,#000 55%);transform:perspective(1000px) rotateY(10deg);',tile],
+ 'root-mask-perspective-x':['mask-image:linear-gradient(90deg,transparent,#000 55%);transform:perspective(1000px) rotateX(10deg);transform-origin:0 0;',tile],
+ 'root-mask-3d-affine':['mask-image:linear-gradient(90deg,transparent,#000 55%);transform:translate3d(30px,20px,1px) scale(.78);transform-origin:0 0;',tile],
+ 'root-3d-opacity':['opacity:.7;transform:perspective(1000px) rotateY(10deg);transform-origin:0 0;',tile],
+ 'root-3d-filter':['filter:brightness(.8);transform:perspective(1000px) rotateY(10deg);transform-origin:0 0;',tile],
+ 'root-contain':[small+'contain:layout;','background:#2676c8;background-attachment:fixed;'],
+ 'body-contain':['','contain:paint;height:260px;background:#2676c8;background-attachment:fixed;'],
+ 'two-backgrounds':['background:#2676c8;',tile],
+ 'body-hidden':['',tile+'visibility:hidden;'],
+ 'root-hidden':['background:#2676c8;visibility:hidden;',''],
+ 'body-none':['',tile+'display:none;'],
+ 'root-text-clip':['background:#2676c8;background-clip:text;',''],
+ 'body-text-clip':['','background:#2676c8;background-clip:text;'],
+ 'root-shadow':[small+'background:#2676c8;box-shadow:8px 5px 8px #0008;',''],
+ 'root-round':[small+tile+'background-repeat:round space;background-size:107px 93px;background-position:15% 30%;',''],
+ 'root-blur':['background:#2676c8;filter:blur(4px);','']
+ ,'root-blend':[small+blend,'']
+ ,'body-blend':[small,blend]
+ ,'root-blend-mask':[small+blend+'mask-image:linear-gradient(90deg,transparent,#000 55%);transform:scale(.78) rotate(3deg);transform-origin:0 0;','']
+};
+const id=new URLSearchParams(location.search).get('case')||'root-fixed';
+const [root,body]=cases[id];document.documentElement.style.cssText=root;document.body.style.cssText=body;document.body.dataset.case=id;document.title=id;
+</script></body></html>

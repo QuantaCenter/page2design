@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native effects</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#eef2f7;font:18px/28px Arial,sans-serif;color:#263751}
+.case{position:relative;width:342px;margin-bottom:24px;padding:24px;background:#fff;overflow:hidden}.stage{position:relative;width:294px;height:164px}
+.opacity{position:relative;opacity:.45;width:250px;height:140px;background:#236cbb}.red{position:absolute;left:20px;top:16px;width:135px;height:90px;background:#e74552}.green{position:absolute;left:80px;top:48px;width:135px;height:80px;background:#19a36f}
+.nested{position:absolute;left:120px;top:20px;width:100px;height:100px;opacity:.5;background:#e5c522}.nested i{position:absolute;left:20px;top:20px;width:70px;height:60px;background:#7445d5}.filtered{filter:blur(0px)}
+.zero-wrapper{position:relative;width:0;height:0;opacity:.5}
+.pseudo{position:relative;width:270px;height:140px;padding:44px 12px 0;background:#dae7f3;counter-reset:badge 6}
+.pseudo::before{content:attr(data-label);display:block;position:absolute;left:8px;top:8px;width:188px;padding:4px 8px;background:#f5ce5c;color:#263751;font-weight:700;border:2px solid #c69021;border-radius:6px}
+.pseudo::after{counter-increment:badge;content:counter(badge) ' ✓';position:absolute;right:8px;bottom:8px;background:#7bc5b5;color:#173f49;padding:4px 12px;border-radius:4px}
+.wrap::before{content:'Wrapped generated text stays native';position:absolute;left:12px;top:12px;width:130px;font:20px/28px Arial;color:#c73e54;background:#fff}
+.wrap::after{content:'';position:absolute;right:10px;bottom:10px;width:60px;height:60px;border:5px solid #496fbc;border-radius:50%;background:linear-gradient(90deg,#df7f5e,#f8d678)}
+.shadow{margin:28px 0;font:700 34px/46px Arial;color:#24487b;text-shadow:4px 3px 0 #e68b41,-3px 7px 5px #7c68d0}
+.shadow-transparent{color:transparent;text-shadow:3px 2px 3px #227a8c}.shadow-mixed{font-size:30px;text-shadow:2px 4px 2px #c86487}.shadow-mixed span{color:#b93243;text-shadow:-3px 1px 0 #43b8ad}
+video{display:block;width:270px;height:140px;object-fit:contain;background:#17253a;border:3px solid #517696;border-radius:12px;padding:4px}
+.seam{margin-top:60px;height:220px}.seam .opacity{height:200px}.seam .green{height:150px}
+</style></head><body>
+<section class="case" id="case-opacity"><div class="stage"><div class="opacity" id="opacity-group"><div class="red"></div><div class="green"></div><div class="nested"><i></i></div></div></div></section>
+<section class="case" id="case-opacity-filter"><div class="stage"><div class="opacity" id="opacity-filter"><div class="red filtered"></div><div class="green"></div></div></div></section>
+<section class="case" id="case-zero"><div class="stage"><div class="zero-wrapper" id="opacity-zero"><div class="red"></div><div class="green"></div></div></div></section>
+<section class="case" id="case-pseudo"><div class="stage"><div class="pseudo" id="pseudo-content" data-label="Generated label" style="opacity:.7">Real host text</div></div></section>
+<section class="case" id="case-pseudo-wrap"><div class="stage"><div class="pseudo wrap" id="pseudo-wrapped"></div></div></section>
+<section class="case" id="case-shadow"><div class="shadow" id="text-shadow">Canvas text</div><div class="shadow shadow-transparent" id="text-shadow-transparent">Shadow only</div><div class="shadow shadow-mixed" id="text-shadow-mixed">Mixed <span>colors</span></div></section>
+<section class="case" id="case-video"><video id="native-video" autoplay muted playsinline></video></section>
+<section class="case" id="case-poster"><video id="poster-video" muted playsinline></video></section>
+<section class="case seam" id="case-seam"><div class="opacity" id="opacity-seam"><div class="red"></div><div class="green"></div></div></section>
+<script>
+const frame=document.createElement('canvas');frame.width=160;frame.height=90;const ctx=frame.getContext('2d');
+for(const [x,y,color] of [[0,0,'#d44f64'],[80,0,'#34a38f'],[0,45,'#416db7'],[80,45,'#e5bd4e']]){ctx.fillStyle=color;ctx.fillRect(x,y,80,45)}
+const video=document.getElementById('native-video');video.srcObject=frame.captureStream(1);video.play().catch(()=>{});
+document.getElementById('poster-video').poster=frame.toDataURL('image/png');
+</script></body></html>

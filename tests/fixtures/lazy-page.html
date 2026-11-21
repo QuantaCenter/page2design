@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Scroll loading</title>
+<style>body{margin:0;padding:24px;font:16px/24px Arial,sans-serif}.spacer{height:1000px}.card{height:180px;background:#eef2f8;padding:20px}.tail{height:600px}img{width:160px;height:96px;display:block}</style></head>
+<body><h1>Scroll loading</h1><div class="spacer"></div><article class="card" id="late-card">Loading skeleton</article><div class="tail"></div>
+<script>
+let loading=false;
+addEventListener('scroll',()=>{if(!loading&&scrollY>600){loading=true;setTimeout(()=>{document.getElementById('late-card').innerHTML='<span>Loaded below fold</span><img src="/visual-assets/pattern.png" alt="late image">';},500);}});
+</script></body></html>

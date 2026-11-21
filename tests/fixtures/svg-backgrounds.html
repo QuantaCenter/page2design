@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SVG background sizing</title>
+<style>*{box-sizing:border-box}body{margin:0;padding:24px;background:#e8edf5;font:14px Arial}.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px}.case{padding:12px;background:#fff}.stage{height:120px;position:relative;background:#234866}.subject{position:absolute;left:12px;top:20px;width:64px;height:64px;background-position:50% 50%;background-repeat:no-repeat}.wide{width:120px}.square{width:96px;height:80px}</style></head><body><div class="gallery" id="gallery"></div>
+<script>
+const content=`<defs><filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity=".6"/></filter></defs><path fill="white" fill-rule="evenodd" filter="url(#shadow)" d="M12 16h56v52H12z M31 29v27l23-13z"/><path stroke="white" stroke-width="5" d="m23 6 8 10m26-10-8 10"/>`;
+const svg=(attributes='',body=content)=>`<svg xmlns="http://www.w3.org/2000/svg" ${attributes}>${body}</svg>`;
+const ratioOnly=svg('viewBox="0 0 80 80"');
+const cases=[
+ ['ratio-only',ratioOnly,'',''],['ratio-wide',ratioOnly,'wide',''],
+ ['explicit',svg('viewBox="0 0 80 80" width="40" height="30"'),'',''],
+ ['width-only',svg('viewBox="0 0 80 80" width="40"'),'',''],['height-only',svg('viewBox="0 0 80 80" height="24"'),'',''],
+ ['percentage',svg('viewBox="0 0 80 80" width="100%" height="100%"'),'wide',''],
+ ['font-units',svg('viewBox="0 0 80 80" width="1em" height="1em"'),'',''],
+ ['no-dimensions',svg('','<rect x="12" y="8" width="32" height="20" fill="white"/>'),'',''],
+ ['css-viewport',ratioOnly,'wide','background-size:96px 40px'],
+ ['stretch',svg('viewBox="0 0 80 80" preserveAspectRatio="none"'),'wide','background-size:96px 40px'],
+ ['css-width',ratioOnly,'wide','background-size:50% auto'],['css-height',ratioOnly,'wide','background-size:auto 50%'],
+ ['cover',ratioOnly,'wide','background-size:cover'],['contain',ratioOnly,'wide','background-size:contain'],
+ ['round',ratioOnly,'square','background-size:24px auto;background-repeat:round space'],
+];
+document.getElementById('gallery').innerHTML=cases.map(([id,source,cls,style])=>`<section class="case"><div class="stage" id="${id}-stage"><div class="subject ${cls}" id="${id}" style="${style};background-image:url('data:image/svg+xml,${encodeURIComponent(source).replaceAll("'",'%27')}')"></div></div></section>`).join('');
+</script></body></html>
