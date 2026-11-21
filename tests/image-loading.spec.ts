@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { createServer, type Server } from 'node:http';
 import sharp from 'sharp';
-import type { DesignDocument } from '@page-to-design/core';
+import type { DesignDocument } from '@quantacenter/page2design';
 import { createImageWaiter, settleResourceBodies } from '../server/wait-for-images';
 
 let server: Server, origin: string;

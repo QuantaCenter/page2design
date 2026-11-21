@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { DesignDocument } from '@page-to-design/core';
-import { loadDocumentResources, type DocumentResources } from '@page-to-design/core/canvas';
+import type { DesignDocument } from '@quantacenter/page2design';
+import { loadDocumentResources, type DocumentResources } from '@quantacenter/page2design/canvas';
 
 /** React lifecycle adapter over the same framework-free resource decoder. */
 export function useResources(document: DesignDocument | null): DocumentResources | null {

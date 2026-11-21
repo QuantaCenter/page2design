@@ -15,10 +15,10 @@ import {
   Scan,
   TriangleAlert,
 } from 'lucide-react';
-import type { DesignDocument, DesignNode } from '@page-to-design/core';
-import { measureRects, round } from '@page-to-design/core';
+import type { DesignDocument, DesignNode } from '@quantacenter/page2design';
+import { measureRects, round } from '@quantacenter/page2design';
 import { NodeIcon } from './LayerTree';
-import { nodeCss } from '@page-to-design/core';
+import { nodeCss } from '@quantacenter/page2design';
 
 export function downloadDataUrl(url: string, filename: string) {
   const link = document.createElement('a');

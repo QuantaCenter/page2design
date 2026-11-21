@@ -1,5 +1,5 @@
 import type { Page } from 'playwright';
-import { matrixFromQuad, type DesignNode, type TransformMatrix } from '@page-to-design/core';
+import { matrixFromQuad, type DesignNode, type TransformMatrix } from '@quantacenter/page2design';
 import { evaluateInPage } from './evaluate-in-page';
 
 export async function prepareTransformLayout(page: Page) {

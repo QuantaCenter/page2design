@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import type { DesignDocument } from '@page-to-design/core';
+import type { DesignDocument } from '@quantacenter/page2design';
 
 test('full-page collection waits for content triggered by preload scrolling', async ({
   request,

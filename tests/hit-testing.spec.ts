@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import type { Camera, DesignDocument } from '@page-to-design/core';
+import type { Camera, DesignDocument } from '@quantacenter/page2design';
 
 test('transparent raster overlays pass hover, selection and measurement to visible layers', async ({
   page,

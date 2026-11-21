@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { createServer, type Server } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import type { Camera, DesignDocument } from '@page-to-design/core';
+import type { Camera, DesignDocument } from '@quantacenter/page2design';
 
 let fixtureServer: Server;
 let fixtureUrl: string;

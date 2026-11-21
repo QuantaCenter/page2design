@@ -4,7 +4,7 @@ import {
   projectPoint,
   type DesignDocument,
   type Camera,
-} from '@page-to-design/core';
+} from '@quantacenter/page2design';
 
 test('native clipping controls DOM and Canvas hits while image masks preserve box hit testing', async ({
   page,

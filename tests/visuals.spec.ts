@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import type { Camera, DesignDocument, Rect } from '@page-to-design/core';
+import type { Camera, DesignDocument, Rect } from '@quantacenter/page2design';
 
 for (const width of [390, 1440]) {
   test(`complex images, SVG, gradients and effects match at ${width}px`, async ({

@@ -4,7 +4,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import sharp from 'sharp';
-import { flattenDocument, type DesignDocument } from '@page-to-design/core';
+import { flattenDocument, type DesignDocument } from '@quantacenter/page2design';
 
 let server: Server, origin: string;
 test.beforeAll(async () => {

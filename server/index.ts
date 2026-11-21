@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { capture, closeBrowser } from './capture';
 import type { ConvertOptions } from './capture';
-import { CAPTURE_REVISION } from '@page-to-design/core';
+import { CAPTURE_REVISION } from '@quantacenter/page2design';
 
 const app = express();
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');

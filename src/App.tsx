@@ -27,11 +27,11 @@ import type {
   DesignNode,
   LayerStructure,
   Tool,
-} from '@page-to-design/core';
-import { clamp } from '@page-to-design/core';
-import { flattenDocument } from '@page-to-design/core';
-import { CAPTURE_REVISION } from '@page-to-design/core';
-import { renderToCanvas } from '@page-to-design/core/canvas';
+} from '@quantacenter/page2design';
+import { clamp } from '@quantacenter/page2design';
+import { flattenDocument } from '@quantacenter/page2design';
+import { CAPTURE_REVISION } from '@quantacenter/page2design';
+import { renderToCanvas } from '@quantacenter/page2design/canvas';
 import type { CanvasHandle } from './components/canvas/DesignCanvas';
 import { useResources } from './components/canvas/useResources';
 import { CanvasWorkspace } from './components/CanvasWorkspace';

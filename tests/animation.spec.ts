@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import type { DesignDocument } from '@page-to-design/core';
+import type { DesignDocument } from '@quantacenter/page2design';
 
 test('carousel DOM, reference and local screenshots retain one timer and animation frame', async ({
   page,

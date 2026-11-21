@@ -10,7 +10,7 @@ import {
   type DesignDocument,
   type FontAsset,
   type CssImage,
-} from '@page-to-design/core';
+} from '@quantacenter/page2design';
 import {
   collectDomLayout,
   collectDomTables,
@@ -20,7 +20,7 @@ import {
   type PseudoLayout,
   type ControlTextLayout,
   type ControlPartLayout,
-} from '@page-to-design/core/dom';
+} from '@quantacenter/page2design/dom';
 import { evaluateInPage, evaluateWithDocument } from './evaluate-in-page';
 import {
   prepareTransformLayout,

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import { flattenDocument, type DesignDocument } from '@page-to-design/core';
+import { flattenDocument, type DesignDocument } from '@quantacenter/page2design';
 
 for (const width of [390, 1440])
   test(`filters, blends, backdrop and inset shadows stay native at ${width}px`, async ({

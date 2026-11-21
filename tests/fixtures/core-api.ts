@@ -1,1 +1,1 @@
-export * from '@page-to-design/core/canvas';
+export * from '@quantacenter/page2design/canvas';

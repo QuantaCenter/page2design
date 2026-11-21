@@ -20,7 +20,7 @@ import {
   type DesignDocument,
   type DesignNode,
   type Tool,
-} from '@page-to-design/core';
+} from '@quantacenter/page2design';
 import { PreviewLayer } from './PreviewLayer';
 
 export interface CanvasHandle {

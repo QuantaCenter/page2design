@@ -13,7 +13,7 @@
     "start": "tsx server/index.ts",
     "test": "bun run build:core && bun run --cwd packages/core test && node --import tsx --test tests/*.test.ts",
     "test:package": "node scripts/test-core-package.mjs",
-    "pack:core": "npm pack --workspace @page-to-design/core --pack-destination artifacts",
+    "pack:core": "npm pack --workspace @quantacenter/page2design --pack-destination artifacts",
     "test:e2e": "playwright test",
     "profile:preview": "node --import tsx scripts/profile-preview.mts",
     "setup:browser": "playwright install chromium",
@@ -25,7 +25,7 @@
     "check": "bun run format:check && bun run lint && bun run typecheck"
   },
   "dependencies": {
-    "@page-to-design/core": "*",
+    "@quantacenter/page2design": "*",
     "express": "^5.1.0",
     "konva": "^10.0.0",
     "lucide-react": "^0.577.0",

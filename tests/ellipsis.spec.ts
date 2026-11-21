@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import type { DesignDocument } from '@page-to-design/core';
+import type { DesignDocument } from '@quantacenter/page2design';
 
 for (const width of [390, 1440])
   test(`single and multiline ellipses remain inspectable native text at ${width}px`, async ({

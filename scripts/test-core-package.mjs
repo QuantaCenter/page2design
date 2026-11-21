@@ -25,7 +25,7 @@ try {
     [
       'pack',
       '--workspace',
-      '@page-to-design/core',
+      '@quantacenter/page2design',
       '--pack-destination',
       packageDirectory,
       '--json',
@@ -49,7 +49,7 @@ try {
       maxBuffer: 1024 * 1024,
     },
   );
-  const installed = path.join(consumer, 'node_modules/@page-to-design/core');
+  const installed = path.join(consumer, 'node_modules/@quantacenter/page2design');
   const metadata = JSON.parse(await readFile(path.join(installed, 'package.json'), 'utf8'));
   const declaredDependencies = {
     ...metadata.dependencies,
@@ -75,9 +75,9 @@ try {
     path.join(consumer, 'check.mjs'),
     `
     import assert from 'node:assert/strict';
-    import {convertSnapshot} from '@page-to-design/core';
-    import {CanvasRenderer,loadDocumentResources} from '@page-to-design/core/canvas';
-    import {collectDomLayout} from '@page-to-design/core/dom';
+    import {convertSnapshot} from '@quantacenter/page2design';
+    import {CanvasRenderer,loadDocumentResources} from '@quantacenter/page2design/canvas';
+    import {collectDomLayout} from '@quantacenter/page2design/dom';
     globalThis.fetch=()=>{throw new Error('Core must not acquire a page.');};
     assert.equal(typeof CanvasRenderer,'function');assert.equal(typeof loadDocumentResources,'function');assert.equal(typeof collectDomLayout,'function');
     const model=convertSnapshot({id:'standalone',capturedAt:'2026-11-16T00:00:00.000Z',title:'Prepared information',viewport:{width:390,height:844},width:390,height:844,background:'#fff',nodes:[],assets:[]});
@@ -90,7 +90,7 @@ try {
   await writeFile(
     path.join(consumer, 'backend.ts'),
     `
-    import {convertSnapshot,type PageSnapshot,type DesignDocument} from '@page-to-design/core';
+    import {convertSnapshot,type PageSnapshot,type DesignDocument} from '@quantacenter/page2design';
     declare const input:PageSnapshot;export const model:DesignDocument=convertSnapshot(input);
     // @ts-expect-error URL acquisition is not a core input.
     convertSnapshot('https://example.com');
@@ -99,9 +99,9 @@ try {
   await writeFile(
     path.join(consumer, 'frontend.ts'),
     `
-    import {type DesignDocument} from '@page-to-design/core';
-    import {CanvasRenderer,loadDocumentResources,renderToCanvas} from '@page-to-design/core/canvas';
-    import {collectDomLayout} from '@page-to-design/core/dom';
+    import {type DesignDocument} from '@quantacenter/page2design';
+    import {CanvasRenderer,loadDocumentResources,renderToCanvas} from '@quantacenter/page2design/canvas';
+    import {collectDomLayout} from '@quantacenter/page2design/dom';
     declare const model:DesignDocument;const resources=await loadDocumentResources(model);
     new CanvasRenderer(model,resources).render(document.createElement('canvas'));
     renderToCanvas(model,resources);collectDomLayout({document,fullPage:false,maxHeight:1000,maxNodes:100});
@@ -165,7 +165,7 @@ try {
       externalRequests.push(request.url());
   });
   const base = `http://127.0.0.1:${server.address().port}`;
-  await page.goto(base + '/node_modules/@page-to-design/core/examples/standalone.html');
+  await page.goto(base + '/node_modules/@quantacenter/page2design/examples/standalone.html');
   await page.waitForFunction(() => document.querySelector('canvas').dataset.ready === 'true');
   const result = JSON.parse(await page.locator('#result').textContent());
   assert.equal(result.under, 'card');

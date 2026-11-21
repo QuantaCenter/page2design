@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import type { DesignDocument } from '@page-to-design/core';
+import type { DesignDocument } from '@quantacenter/page2design';
 
 test('DOM-created and qualified SVG namespaces survive capture without aborting the page', async ({
   page,

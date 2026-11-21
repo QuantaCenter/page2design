@@ -63,7 +63,7 @@ bun run start
 
 ## 实现结构
 
-转换与绘制由独立工作区包 `@page-to-design/core` 提供。核心接收结构化快照或调用方提供的 `Document`，处理布局信息、设计模型和绘制。应用的服务端通过 Playwright 采集页面、资源和原图，前端负责交互与下载。[核心包 API 与集成示例](packages/core/README.md)
+转换与绘制由独立工作区包 `@quantacenter/page2design` 提供。核心接收结构化快照或调用方提供的 `Document`，处理布局信息、设计模型和绘制。应用的服务端通过 Playwright 采集页面、资源和原图，前端负责交互与下载。[核心包 API 与集成示例](packages/core/README.md)
 
 核心包使用标准 DOM 和 Canvas2D API，当前没有第三方运行时依赖。主入口可在 Node.js 或浏览器中调用，`/dom` 和 `/canvas` 提供浏览器端能力。应用在 `src/components/canvas/` 中使用 React 和 Konva 实现画布交互。
 
@@ -200,6 +200,17 @@ SVG 命名空间回归可运行 `bun run test:e2e -- svg.spec.ts`。覆盖页面
 透明截图层的交互回归可运行 `bun run test:e2e -- hit-testing.spec.ts`。覆盖透明全屏容器、完全透明截图、可见悬浮按钮和环形透明孔洞，检查 50% / 100% / 200% 下的悬停、选中与测距。截图层按 alpha 生成缓存命中路径，透明区域不会用整块矩形挡住下层元素。
 
 </details>
+
+## 发布核心包
+
+在要发布的提交上创建并推送 `vX.Y.Z` 标签，例如：
+
+```sh
+git tag v0.1.1
+git push origin v0.1.1
+```
+
+GitHub Actions 从标签读取版本号，运行 core 测试和独立安装验证，然后用 npm Trusted Publishing 将通过验证的 tarball 公开发布为 `@quantacenter/page2design` 的 `latest` 版本。每个 npm 版本只能发布一次。[发布工作流](.github/workflows/publish-npm.yml)
 
 ## 许可证
 

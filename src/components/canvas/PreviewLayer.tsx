@@ -7,8 +7,8 @@ import {
   type Camera,
   type DesignDocument,
   type DesignNode,
-} from '@page-to-design/core';
-import { paintNodeHit, PreviewCache } from '@page-to-design/core/canvas';
+} from '@quantacenter/page2design';
+import { paintNodeHit, PreviewCache } from '@quantacenter/page2design/canvas';
 
 const emptyScene = () => {};
 

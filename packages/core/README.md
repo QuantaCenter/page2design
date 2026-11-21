@@ -1,21 +1,27 @@
-# @page-to-design/core
+# @quantacenter/page2design
 
 把调用方已经取得的页面信息转换为设计文档，再用 Canvas2D 绘制。核心接收结构化布局快照，或显式传入的浏览器 `Document`；打开 URL、启动浏览器、等待网络、获取图片与字体、截取复杂区域均由宿主负责。
 
+## 安装
+
+```sh
+npm install @quantacenter/page2design
+```
+
 ## 入口
 
-| 入口                          | 职责                                              | 运行环境             |
-| ----------------------------- | ------------------------------------------------- | -------------------- |
-| `@page-to-design/core`        | 快照转换、设计模型、绝对平铺、CSS、坐标和测距     | Node.js 20+ 或浏览器 |
-| `@page-to-design/core/dom`    | 处理已提供的 `Document`，提取布局、文字与表格信息 | 浏览器               |
-| `@page-to-design/core/canvas` | 解码内联资源、绘制、预览缓存、命中、PNG           | 浏览器               |
+| 入口                               | 职责                                              | 运行环境             |
+| ---------------------------------- | ------------------------------------------------- | -------------------- |
+| `@quantacenter/page2design`        | 快照转换、设计模型、绝对平铺、CSS、坐标和测距     | Node.js 20+ 或浏览器 |
+| `@quantacenter/page2design/dom`    | 处理已提供的 `Document`，提取布局、文字与表格信息 | 浏览器               |
+| `@quantacenter/page2design/canvas` | 解码内联资源、绘制、预览缓存、命中、PNG           | 浏览器               |
 
-包提供编译后的 ESM JavaScript 和 TypeScript 声明，运行时仅使用平台 API。原 React 画布适配位于应用的组件目录。[应用画布实现](../../src/components/canvas)
+包提供编译后的 ESM JavaScript 和 TypeScript 声明，运行时仅使用平台 API。React 画布适配位于应用的组件目录。[应用画布实现](https://github.com/QuantaCenter/page2design/tree/master/src/components/canvas)
 
 ## 转换已取得的信息
 
 ```ts
-import { convertSnapshot, type PageSnapshot } from '@page-to-design/core';
+import { convertSnapshot, type PageSnapshot } from '@quantacenter/page2design';
 
 // info 由宿主提供：固定几何、计算样式、文字分片、绘制顺序和资源字节。
 function buildDesign(info: PageSnapshot) {
@@ -38,8 +44,8 @@ function buildDesign(info: PageSnapshot) {
 ## 已有 Document 的处理
 
 ```ts
-import { prepareConversion, completeConversion } from '@page-to-design/core';
-import { collectDomLayout, collectDomTables } from '@page-to-design/core/dom';
+import { prepareConversion, completeConversion } from '@quantacenter/page2design';
+import { collectDomLayout, collectDomTables } from '@quantacenter/page2design/dom';
 
 const layout = collectDomLayout({
   document: suppliedDocument, // 必须由调用方取得，并已完成布局
@@ -75,7 +81,7 @@ const design = completeConversion(plan, suppliedResources, { structure: 'flat' }
 ## 原生 Canvas
 
 ```ts
-import { CanvasRenderer, loadDocumentResources } from '@page-to-design/core/canvas';
+import { CanvasRenderer, loadDocumentResources } from '@quantacenter/page2design/canvas';
 
 const resources = await loadDocumentResources(design);
 const renderer = new CanvasRenderer(design, resources);

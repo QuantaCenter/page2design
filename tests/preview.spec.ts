@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import type { Camera, DesignDocument, DesignNode } from '@page-to-design/core';
-import { CAPTURE_REVISION } from '@page-to-design/core';
+import type { Camera, DesignDocument, DesignNode } from '@quantacenter/page2design';
+import { CAPTURE_REVISION } from '@quantacenter/page2design';
 import sharp from 'sharp';
 
 function largeDocument(): DesignDocument {

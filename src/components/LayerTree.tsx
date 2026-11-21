@@ -14,7 +14,7 @@ import {
   SquareCheck,
   Wallpaper,
 } from 'lucide-react';
-import type { DesignDocument, DesignNode, LayerStructure } from '@page-to-design/core';
+import type { DesignDocument, DesignNode, LayerStructure } from '@quantacenter/page2design';
 
 export function NodeIcon({ node, size = 14 }: { node: DesignNode; size?: number }) {
   const Icon =

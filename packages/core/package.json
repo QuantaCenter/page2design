@@ -1,7 +1,13 @@
 {
-  "name": "@page-to-design/core",
+  "name": "@quantacenter/page2design",
   "version": "0.1.0",
   "description": "Convert prepared page snapshots into design documents and render them with Canvas2D.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuantaCenter/page2design.git",
+    "directory": "packages/core"
+  },
   "files": [
     "dist/index.*",
     "dist/canvas",
@@ -28,6 +34,10 @@
       "import": "./dist/canvas/index.js"
     },
     "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsc -b tsconfig.json --force",

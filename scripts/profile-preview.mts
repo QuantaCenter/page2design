@@ -2,7 +2,7 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { chromium } from 'playwright';
-import { CAPTURE_REVISION } from '@page-to-design/core';
+import { CAPTURE_REVISION } from '@quantacenter/page2design';
 
 const source = process.argv[2] || 'artifacts/bilibili-stacking/live/design.json';
 const output = process.argv[3] || 'artifacts/performance/preview.json';
